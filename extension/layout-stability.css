@@ -1,0 +1,30 @@
+/*
+ * 搜索候选框是视觉浮层，不应参与下方收藏区的文档流计算。
+ * 使用 !important 是为了覆盖 Tailwind 的条件定位类（居中/顶部布局共用）。
+ */
+#search-suggestions {
+  position: absolute !important;
+  top: calc(100% + 0.5rem) !important;
+  right: 0 !important;
+  left: 0 !important;
+}
+
+/*
+ * 仅在候选框确实会遮挡收藏区时，收藏标题和卡片才作为一个整体避让。
+ * 位移量由脚本按实际重叠距离计算。
+ */
+[data-favorite-dropzone="true"] {
+  translate: 0 var(--akisato-search-suggestions-offset, 0px);
+  /*
+   * 打开/收起与候选框同时开始；避让距离在开始时确定，
+   * 不会因候选框每一帧的尺寸变化而重复重启动画。
+   */
+  transition: translate 0.34s cubic-bezier(0.22, 0.8, 0.36, 1);
+  will-change: translate;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-favorite-dropzone="true"] {
+    transition: none;
+  }
+}
